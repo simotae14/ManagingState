@@ -2,15 +2,48 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-const value1 = Math.floor(Math.random() * 100);
-const value2 = Math.floor(Math.random() * 100);
-const value3 = Math.floor(Math.random() * 100);
-const proposedAnswer = Math.floor(Math.random() * 3) + value1 + value2 + value3;
-const numQuestions = 0;
-const numCorrect = 0;
-
 class App extends Component {
+  /*
+  set the initial state of our Component
+  */
+  constructor(props) {
+  	super(props);
+    this.state = {
+    	value1: Math.floor(Math.random() * 100),
+      	value2: Math.floor(Math.random() * 100),
+		value3: Math.floor(Math.random() * 100),
+      	numQuestions: 0,
+		numCorrect: 0
+    }
+  }
+  /*
+  method to calculate the exact total of the 3 values
+  */
+  calculateResult = () => {
+   	 return this.state.value1 + this.state.value2 + this.state.value3;
+  }
+  /*
+  method to calculate the proposed answer
+  */
+  calculateProposedAnswer = () => {
+  	return  Math.floor(Math.random() * 3) + this.state.value1 + this.state.value2 + this.state.value3;
+  }
+  /*
+  handler that trigger on clicking one of the two buttons and set the State
+  */
+  answerQuestion = (response, proposedAnswer) => {
+    const total = this.calculateResult();
+    const areEquals = total === proposedAnswer;
+    this.setState((prevState) => ({
+        value1: Math.floor(Math.random() * 100),
+      	value2: Math.floor(Math.random() * 100),
+		value3: Math.floor(Math.random() * 100),
+      	numQuestions: prevState.numQuestions + 1,
+		numCorrect: (areEquals === response) ? (prevState.numCorrect + 1) : prevState.numCorrect 
+    }));
+  }
   render() {
+    const proposedAnswer = this.calculateProposedAnswer();
     return (
       <div className="App">
         <header className="App-header">
@@ -20,12 +53,12 @@ class App extends Component {
         <div className="game">
           <h2>Mental Math</h2>
           <div className="equation">
-            <p className="text">{`${value1} + ${value2} + ${value3} = ${proposedAnswer}`}</p>
+            <p className="text">{`${this.state.value1} + ${this.state.value2} + ${this.state.value3} = ${proposedAnswer}`}</p>
           </div>
-          <button>True</button>
-          <button>False</button>
+          <button onClick={() => this.answerQuestion(true, proposedAnswer)}>True</button>
+          <button onClick={() => this.answerQuestion(false, proposedAnswer)}>False</button>
           <p className="text">
-            Your Score: {numCorrect}/{numQuestions}
+            Your Score: {this.state.numCorrect}/{this.state.numQuestions}
           </p>
         </div>
       </div>
